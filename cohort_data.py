@@ -159,9 +159,9 @@ def all_names_by_house(filename):
     house_list.append(sorted(instructors))
 
 
-    print (house_list)
+    # print (house_list)
 
-    return []
+    return house_list
 
 
 def all_data(filename):
@@ -204,7 +204,7 @@ def all_data(filename):
       all_data.append(tuple)
 
     
-    print(all_data)
+    # print(all_data)
     
 
     return all_data
@@ -230,8 +230,29 @@ def get_cohort_for(filename, name):
     Return:
       - str: the person's cohort or None
     """
+  
+    the_cohort = ''
+    cohort_data = open(filename, 'r')
+    student_dict = {}
+    student = 1
+    for line in cohort_data:
+      student_dict[student] = line.split("|")
+      student += 1
 
-    # TODO: replace this with your code
+    # Strip whitespace
+    for student in student_dict:
+      student_dict[student][4] = student_dict[student][4].strip()
+
+    for student in student_dict:
+      if (student_dict[student][0] + " " + student_dict[student][1]) == name:
+        the_cohort = student_dict[student][4]
+      
+      if the_cohort == "I" or the_cohort == "G":
+        the_cohort = "None"
+    
+    # print(f"{name}'s cohort is: {the_cohort}")
+    return f"{name}'s cohort is: {the_cohort}"
+      
 
 
 def find_duped_last_names(filename):
@@ -272,7 +293,7 @@ def get_housemates_for(filename, name):
 
 if __name__ == '__main__':
   filename = "cohort_data.txt"
-  all_data(filename)
+  get_cohort_for(filename, "Ginny Weasley")
     # import doctest
 
     # result = doctest.testfile('doctests.py',
