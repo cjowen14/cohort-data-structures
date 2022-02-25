@@ -1,6 +1,9 @@
 """Functions to parse a file containing student data."""
 
 
+from dbm import dumb
+
+
 def all_houses(filename):
     """Return a set of all house names in the given file.
 
@@ -115,6 +118,13 @@ def all_names_by_house(filename):
       - list[list]: a list of lists
     """
 
+    cohort_data = open(filename, 'r')
+    student_dict = {}
+    student = 1
+    for line in cohort_data:
+      student_dict[student] = line.split("|")
+      student += 1
+    house_list = []
     dumbledores_army = []
     gryffindor = []
     hufflepuff = []
@@ -123,7 +133,33 @@ def all_names_by_house(filename):
     ghosts = []
     instructors = []
 
-    # TODO: replace this with your code
+
+    for student in student_dict:
+      if student_dict[student][2] == "Dumbledore's Army":
+        dumbledores_army.append(student_dict[student][0] + " " + student_dict[student][1])
+      elif student_dict[student][2] == "Gryffindor":
+        gryffindor.append(student_dict[student][0] + " " + student_dict[student][1])
+      elif student_dict[student][2] == "Hufflepuff":
+        hufflepuff.append(student_dict[student][0] + " " + student_dict[student][1])
+      elif student_dict[student][2] == "Ravenclaw":
+        ravenclaw.append(student_dict[student][0] + " " + student_dict[student][1])
+      elif student_dict[student][2] == "Slytherin":
+        slytherin.append(student_dict[student][0] + " " + student_dict[student][1])
+      elif student_dict[student][4].strip() == "G":
+        ghosts.append(student_dict[student][0] + " " + student_dict[student][1])
+      elif student_dict[student][4].strip() == "I":
+        instructors.append(student_dict[student][0] + " " + student_dict[student][1])
+
+    house_list.append(sorted(dumbledores_army))
+    house_list.append(sorted(gryffindor))
+    house_list.append(sorted(hufflepuff))
+    house_list.append(sorted(ravenclaw))
+    house_list.append(sorted(slytherin))
+    house_list.append(sorted(ghosts))
+    house_list.append(sorted(instructors))
+
+
+    print (house_list)
 
     return []
 
@@ -216,7 +252,7 @@ def get_housemates_for(filename, name):
 
 if __name__ == '__main__':
   filename = "cohort_data.txt"
-  students_by_cohort(filename, "Spring 2016")
+  all_names_by_house(filename)
     # import doctest
 
     # result = doctest.testfile('doctests.py',
