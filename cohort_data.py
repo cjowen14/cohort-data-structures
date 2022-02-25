@@ -182,10 +182,30 @@ def all_data(filename):
     Return:
       - list[tuple]: a list of tuples
     """
-
+    # read data and add to dictionary
     all_data = []
+    cohort_data = open(filename, 'r')
+    student_dict = {}
+    student = 1
+    for line in cohort_data:
+      student_dict[student] = line.split("|")
+      student += 1
 
-    # TODO: replace this with your code
+    # Strip whitespace
+    for student in student_dict:
+      student_dict[student][4] = student_dict[student][4].strip()
+
+    # create tuples and append to list
+    tuple = ()
+    for person in student_dict:
+      tuple = ()
+      for i in student_dict[person]:
+        tuple = tuple + (i,)
+      all_data.append(tuple)
+
+    
+    print(all_data)
+    
 
     return all_data
 
@@ -252,7 +272,7 @@ def get_housemates_for(filename, name):
 
 if __name__ == '__main__':
   filename = "cohort_data.txt"
-  all_names_by_house(filename)
+  all_data(filename)
     # import doctest
 
     # result = doctest.testfile('doctests.py',
