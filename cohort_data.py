@@ -16,7 +16,7 @@ def all_houses(filename):
     """
 
     houses = set()
-    cohort_data = open('cohort_data.txt', 'r')
+    cohort_data = open(filename, 'r')
     student_dict = {}
     student = 1
     for line in cohort_data:
@@ -30,9 +30,9 @@ def all_houses(filename):
       houses.add(cohort)
 
     houses.remove('')
-    print(sorted(houses))
+    # print(sorted(houses))
 
-    return houses
+    return sorted(houses)
 
 
 def students_by_cohort(filename, cohort='All'):
@@ -64,8 +64,22 @@ def students_by_cohort(filename, cohort='All'):
     """
 
     students = []
+    print(cohort)
+    cohort_data = open(filename, 'r')
+    student_dict = {}
+    student = 1
+    for line in cohort_data:
+      student_dict[student] = line.split("|")
+      student += 1
 
-    # TODO: replace this with your code
+    cohort_students = []
+    for student in student_dict:
+      if cohort == "All":
+        cohort_students.append(student_dict[student][0] + " " + student_dict[student][1])
+      elif cohort == student_dict[student][4].strip():
+        cohort_students.append(student_dict[student][0] + " " + student_dict[student][1])
+
+    # print(sorted(cohort_students))
 
     return sorted(students)
 
@@ -201,8 +215,8 @@ def get_housemates_for(filename, name):
 #
 
 if __name__ == '__main__':
-  filename = "/cohort_data.txt"
-  all_houses(filename)
+  filename = "cohort_data.txt"
+  students_by_cohort(filename, "Spring 2016")
     # import doctest
 
     # result = doctest.testfile('doctests.py',
