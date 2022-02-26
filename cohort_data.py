@@ -269,7 +269,33 @@ def find_duped_last_names(filename):
       - set[str]: a set of strings
     """
 
-    # TODO: replace this with your code
+    last_list = []
+    check_list = []
+    dupes = set()
+    cohort_data = open(filename, 'r')
+    student_dict = {}
+    student = 1
+    for line in cohort_data:
+      student_dict[student] = line.split("|")
+      student += 1
+    # Strip whitespace
+    for student in student_dict:
+      student_dict[student][4] = student_dict[student][4].strip()
+
+     
+    for student in student_dict:
+      num = 1
+      for i in student_dict:
+        try:
+          num += 1
+          if(student_dict[student][1] == student_dict[student + num][1]):
+            dupes.add(student_dict[student][1])
+        except KeyError:
+          pass
+      
+    # print(dupes)
+
+    return dupes
 
 
 def get_housemates_for(filename, name):
@@ -293,7 +319,7 @@ def get_housemates_for(filename, name):
 
 if __name__ == '__main__':
   filename = "cohort_data.txt"
-  get_cohort_for(filename, "Ginny Weasley")
+  find_duped_last_names(filename)
     # import doctest
 
     # result = doctest.testfile('doctests.py',
