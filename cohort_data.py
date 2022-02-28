@@ -3,6 +3,8 @@
 
 from dbm import dumb
 
+from numpy import full
+
 
 def all_houses(filename):
     """Return a set of all house names in the given file.
@@ -67,13 +69,20 @@ def students_by_cohort(filename, cohort='All'):
     """
 
     students = []
-    print(cohort)
     cohort_data = open(filename, 'r')
     student_dict = {}
     student = 1
     for line in cohort_data:
       student_dict[student] = line.split("|")
       student += 1
+
+    delete = set()
+    for student in student_dict:
+      if student_dict[student][4] == "I\n" or student_dict[student][4] == "G\n":
+        delete.add(student)
+      
+    for i in delete:
+      student_dict.pop(i)
 
     cohort_students = []
     for student in student_dict:
@@ -82,9 +91,7 @@ def students_by_cohort(filename, cohort='All'):
       elif cohort == student_dict[student][4].strip():
         cohort_students.append(student_dict[student][0] + " " + student_dict[student][1])
 
-    # print(sorted(cohort_students))
-
-    return sorted(students)
+    return sorted(cohort_students)
 
 
 def all_names_by_house(filename):
@@ -196,15 +203,17 @@ def all_data(filename):
       student_dict[student][4] = student_dict[student][4].strip()
 
     # create tuples and append to list
+    delete = set()
     tuple = ()
     for person in student_dict:
+      fullname = (student_dict[person][0] + " " + student_dict[person][1])
+      delete.add(student_dict[student][1])
       tuple = ()
+      tuple = tuple + (fullname,)
       for i in student_dict[person]:
-        tuple = tuple + (i,)
+        if not i == student_dict[person][1] and not i == student_dict[person][0]:
+          tuple = tuple + (i,)
       all_data.append(tuple)
-
-    
-    # print(all_data)
     
 
     return all_data
@@ -232,6 +241,7 @@ def get_cohort_for(filename, name):
     """
   
     the_cohort = ''
+    fullname_list = [];
     cohort_data = open(filename, 'r')
     student_dict = {}
     student = 1
@@ -243,15 +253,21 @@ def get_cohort_for(filename, name):
     for student in student_dict:
       student_dict[student][4] = student_dict[student][4].strip()
 
+    # Make sure the name passed through exists in the data
+    for student in student_dict:
+      fullname = (student_dict[student][0] + " " + student_dict[student][1])
+      fullname_list.append(fullname)
+    if not name in fullname_list:
+      return
+
     for student in student_dict:
       if (student_dict[student][0] + " " + student_dict[student][1]) == name:
         the_cohort = student_dict[student][4]
-      
+
       if the_cohort == "I" or the_cohort == "G":
         the_cohort = "None"
     
-    # print(f"{name}'s cohort is: {the_cohort}")
-    return f"{name}'s cohort is: {the_cohort}"
+    return the_cohort
       
 
 
@@ -269,8 +285,6 @@ def find_duped_last_names(filename):
       - set[str]: a set of strings
     """
 
-    last_list = []
-    check_list = []
     dupes = set()
     cohort_data = open(filename, 'r')
     student_dict = {}
@@ -310,7 +324,30 @@ def get_housemates_for(filename, name):
     {'Angelina Johnson', ..., 'Seamus Finnigan'}
     """
 
-    # TODO: replace this with your code
+    mates = set()
+    cohort_data = open(filename, 'r')
+    student_dict = {}
+    student = 1
+    for line in cohort_data:
+      student_dict[student] = line.split("|")
+      student += 1
+    # Strip whitespace
+    for student in student_dict:
+      student_dict[student][4] = student_dict[student][4].strip()
+
+    for student in student_dict:
+      if name == student_dict[student][0] + " " + student_dict[student][1]:
+        person = student_dict[student]
+    
+    for student in student_dict:
+      if (student_dict[student][2] == person[2]) and (student_dict[student][4] == person[4]):
+        mates.add(student_dict[student][0] + " " + student_dict[student][1])
+
+    mates.remove(person[0] + " " + person[1])
+    
+    # print(mates)
+
+    return mates
 
 
 ##############################################################################
@@ -318,15 +355,15 @@ def get_housemates_for(filename, name):
 #
 
 if __name__ == '__main__':
-  filename = "cohort_data.txt"
-  find_duped_last_names(filename)
-    # import doctest
+    # filename = "cohort_data.txt"
+    # get_housemates_for(filename, 'Harry Potter')
+    import doctest
 
-    # result = doctest.testfile('doctests.py',
-    #                           report=False,
-    #                           optionflags=(
-    #                               doctest.REPORT_ONLY_FIRST_FAILURE
-    #                           ))
-    # doctest.master.summarize(1)
-    # if result.failed == 0:
-    #     print('ALL TESTS PASSED')
+    result = doctest.testfile('doctests.py',
+                              report=False,
+                              optionflags=(
+                                  doctest.REPORT_ONLY_FIRST_FAILURE
+                              ))
+    doctest.master.summarize(1)
+    if result.failed == 0:
+        print('ALL TESTS PASSED')
